@@ -399,11 +399,14 @@ def load_messages(language):
 @frappe.whitelist()
 def load_languages():
 	Language = frappe.qb.DocType("Language")
+	allowed_codes = ["pt-BR", "en", "es"]
+	priority = {"pt-BR": 0, "en": 1, "es": 2}
+
 	language_codes = (
 		frappe.qb.from_(Language)
 		.select(Language.language_code, Language.language_name)
 		.where(Language.enabled == 1)
-		.orderby(Language.language_code)
+		.where(Language.language_code.isin(allowed_codes))
 		.run(as_dict=1)
 	)
 
@@ -415,16 +418,27 @@ def load_languages():
 			Language.language_code.as_("description"),
 		)
 		.where(Language.enabled == 1)
-		.orderby(Language.language_code)
+		.where(Language.language_code.isin(allowed_codes))
 		.run(as_dict=1)
 	)
+
+	language_codes = sorted(
+		language_codes, key=lambda d: priority.get(d["language_code"], 99)
+	)
+	language_opts = sorted(
+		language_opts, key=lambda d: priority.get(d["description"], 99)
+	)
+
 	codes_to_names = {}
 	for d in language_codes:
 		codes_to_names[d.language_code] = d.language_name
 
+	default_language_name = frappe.db.get_value("Language", frappe.local.lang, "language_name")
+	if not default_language_name:
+		default_language_name = "Português Brasileiro"
+
 	return {
-		"default_language": frappe.db.get_value("Language", frappe.local.lang, "language_name")
-		or frappe.local.lang,
+		"default_language": default_language_name,
 		"languages": language_opts,
 		"codes_to_names": codes_to_names,
 	}

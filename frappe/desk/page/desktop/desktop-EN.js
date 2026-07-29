@@ -21,7 +21,7 @@ $.extend(frappe.desktop_utils, {
 frappe.pages["desktop"].on_page_load = function (wrapper) {
 	var page = frappe.ui.make_app_page({
 		parent: wrapper,
-		title: "Área de Trabalho",
+		title: "Desktop",
 		single_column: true,
 		hide_sidebar: true,
 	});
@@ -294,7 +294,7 @@ class DesktopPage {
 		const me = this;
 		let menu_items = [
 			{
-				label: "Editar Layout",
+				label: "Edit Layout",
 				icon: "edit",
 				condition: function () {
 					return !me.edit_mode;
@@ -305,7 +305,7 @@ class DesktopPage {
 				},
 			},
 			{
-				label: "Redefinir Layout",
+				label: "Reset Layout",
 				icon: "rotate-ccw",
 				onClick: function () {
 					reset_to_default();
@@ -358,27 +358,27 @@ class DesktopPage {
 	}
 	add_new_icons_to_grid() {
 		let grid = $($(".desktop-container .icons").get(0));
-		this.add_new_icon = `<div class="desktop-icon desktop-edit-mode add-new-icon" title="Adicionar Novo Ícone">
+		this.add_new_icon = `<div class="desktop-icon desktop-edit-mode add-new-icon" title="Add New Icon">
 		 ${frappe.utils.icon("plus", "lg")}
-		  <div>Espaço de trabalho</div>
+		  <div>Workspace</div>
 		 </div>`;
 		grid.append(this.add_new_icon);
 		$(".add-new-icon").on("click", function () {
 			let d = new frappe.ui.Dialog({
-				title: "Novo Espaço de Trabalho",
+				title: "New Workspace",
 				fields: [
 					{
-						label: "Rótulo",
+						label: "Label",
 						fieldname: "label",
 						fieldtype: "Data",
 					},
 					{
-						label: "Público",
+						label: "Public",
 						fieldname: "public",
 						fieldtype: "Check",
 					},
 				],
-				primary_action_label: "Criar",
+				primary_action_label: "Create",
 				primary_action: function (values) {
 					let icon = frappe.model.get_new_doc("Desktop Icon");
 					icon.workspace = {
@@ -438,33 +438,33 @@ class DesktopPage {
 		let menu_items = [
 			{
 				icon: "edit",
-				label: "Editar Perfil",
+				label: "Edit Profile",
 				url: `/desk/user/${frappe.session.user}`,
 			},
 			{
 				icon: is_dark ? "sun" : "moon",
-				label: "Alternar Tema",
+				label: "Toggle Theme",
 				onClick: function () {
 					new frappe.ui.ThemeSwitcher().show();
 				},
 			},
 			{
 				icon: "info",
-				label: "Sobre",
+				label: "About",
 				onClick: function () {
 					return frappe.ui.toolbar.show_about();
 				},
 			},
 			{
 				icon: "support",
-				label: "ERPZ Suporte",
+				label: "Frappe Support",
 				onClick: function () {
-					window.open("https://suporte.erpz.io/help", "_blank");
+					window.open("https://support.frappe.io/help", "_blank");
 				},
 			},
 			{
 				icon: "rotate-ccw",
-				label: "Redefinir Layout da Área de Trabalho",
+				label: "Reset Desktop Layout",
 				onClick: function () {
 					reset_to_default();
 					window.location.reload();
@@ -472,7 +472,7 @@ class DesktopPage {
 			},
 			{
 				icon: "log-out",
-				label: "Sair",
+				label: "Logout",
 				onClick: function () {
 					frappe.app.logout();
 				},
@@ -518,7 +518,7 @@ class DesktopPage {
 					e.preventDefault();
 					return false;
 				},
-				description: __("Alternar Awesomebar"),
+				description: __("Toggle Awesomebar"),
 				ignore_inputs: true,
 			});
 		}
@@ -951,7 +951,7 @@ class DesktopIcon {
 			right_click: true,
 			menu_items: [
 				{
-					label: "Editar",
+					label: "Edit",
 					icon: "edit",
 					condition: function () {
 						return icon_data.standard != 1;
@@ -983,7 +983,7 @@ class DesktopIcon {
 					},
 				},
 				{
-					label: "Criar Pasta",
+					label: "Create Folder",
 					icon: "folder",
 					onClick: function () {
 						let folder = me.icon_grid.add_folder();
@@ -991,7 +991,7 @@ class DesktopIcon {
 					},
 				},
 				{
-					label: "Adicionar à Pasta",
+					label: "Add To Folder",
 					icon: "folder-open",
 					condition: function () {
 						return me.folders.length > 0;
@@ -1046,7 +1046,7 @@ class DesktopIcon {
 				this.icon.on("click", function (event) {
 					frappe.msgprint(
 						__(
-							"O ícone não está configurado corretamente. Verifique a barra lateral do espaço de trabalho."
+							"Icon is not correctly configured please check the workspace sidebar to it"
 						)
 					);
 				});
@@ -1189,7 +1189,7 @@ class IconsPane {
 			return;
 		}
 		this.wrapper.append(
-			`<span style='margin-top: 10px; margin-bottom: 20px'>${__("Ícones removidos")}</span>`
+			`<span style='margin-top: 10px; margin-bottom: 20px'>${__("Removed Icons")}</span>`
 		);
 		this.grid = new DesktopIconGrid({
 			name: "hidden-icons-grid",

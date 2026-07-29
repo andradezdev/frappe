@@ -82,10 +82,10 @@ frappe.setup.on("before_load", function () {
 		return;
 	}
 
-	// Carrega os slides.
+	// load slides
 	frappe.setup.slides_settings.forEach((s) => {
 		if (!(s.name === "user" && frappe.boot.developer_mode)) {
-			// Ignora o slide de usuário quando estiver em modo de desenvolvedor.
+			// if not user slide with developer mode
 			frappe.setup.add_slide(s);
 		}
 	});
@@ -123,7 +123,7 @@ frappe.setup.SetupWizard = class SetupWizard extends frappe.ui.Slides {
 			if ($target.hasClass("prev-btn") || $target.hasClass("next-btn")) {
 				$target.trigger("click");
 			} else {
-				// Pressionar Enter no campo de autocomplete não deve avançar para o próximo slide.
+				// hitting enter on autocomplete field shouldn't trigger next slide.
 				if ($target.data().fieldtype == "Autocomplete") return;
 
 				this.container.find(".next-btn").trigger("click");
@@ -163,7 +163,7 @@ frappe.setup.SetupWizard = class SetupWizard extends frappe.ui.Slides {
 	}
 
 	refresh_slides() {
-		// Para traduções, etc.
+		// For Translations, etc.
 		if (this.in_refresh_slides || !this.current_slide.set_values(true)) {
 			return;
 		}
@@ -185,7 +185,7 @@ frappe.setup.SetupWizard = class SetupWizard extends frappe.ui.Slides {
 		this.slides = frappe.setup.slides;
 		frappe.setup.run_event("after_load");
 
-		// Renderiza novamente todos os slides e recria apenas os já montados.
+		// re-render all slide, only remake made slides
 		$.each(this.slide_dict, (id, slide) => {
 			if (slide.made) {
 				this.made_slide_ids.push(id);
@@ -217,7 +217,7 @@ frappe.setup.SetupWizard = class SetupWizard extends frappe.ui.Slides {
 				if (r.message.status === "ok") {
 					this.post_setup_success();
 				} else if (r.message.status === "registered") {
-					this.update_setup_message(__("Iniciando a configuração..."));
+					this.update_setup_message(__("starting the setup..."));
 				} else if (r.message.fail !== undefined) {
 					this.abort_setup(r.message.fail);
 				}
@@ -227,7 +227,7 @@ frappe.setup.SetupWizard = class SetupWizard extends frappe.ui.Slides {
 	}
 
 	post_setup_success() {
-		this.set_setup_complete_message(__("Configuração concluída"), __("Atualizando..."));
+		this.set_setup_complete_message(__("Setup Complete"), __("Refreshing..."));
 		if (frappe.setup.welcome_page) {
 			localStorage.setItem("session_last_route", frappe.setup.welcome_page);
 		}
@@ -248,11 +248,11 @@ frappe.setup.SetupWizard = class SetupWizard extends frappe.ui.Slides {
 			? fail_msg
 			: frappe.last_response.setup_wizard_failure_message
 			? frappe.last_response.setup_wizard_failure_message
-			: __("Falha ao concluir a configuração");
+			: __("Failed to complete setup");
 
-		this.update_setup_message(__("Não foi possível iniciar:") + " " + fail_msg);
+		this.update_setup_message(__("Could not start up:") + " " + fail_msg);
 
-		this.$working_state.find(".title").html(__("Falha na configuração"));
+		this.$working_state.find(".title").html(__("Setup failed"));
 
 		this.$abort_btn.show();
 	}
@@ -301,8 +301,8 @@ frappe.setup.SetupWizard = class SetupWizard extends frappe.ui.Slides {
 		frappe.set_route(this.page_name);
 
 		this.$working_state = this.get_message(
-			__("Configurando seu sistema"),
-			__("Iniciando o ERPZ...")
+			__("Setting up your system"),
+			__("Starting Frappe ...")
 		).appendTo(this.parent);
 
 		this.attach_abort_button();
@@ -313,7 +313,7 @@ frappe.setup.SetupWizard = class SetupWizard extends frappe.ui.Slides {
 
 	attach_abort_button() {
 		this.$abort_btn = $(
-			`<button class='btn btn-secondary btn-xs btn-abort text-muted'>${__("Tentar novamente")}</button>`
+			`<button class='btn btn-secondary btn-xs btn-abort text-muted'>${__("Retry")}</button>`
 		);
 		this.$working_state.find(".content").append(this.$abort_btn);
 
@@ -366,7 +366,7 @@ frappe.setup.SetupWizardSlide = class SetupWizardSlide extends frappe.ui.Slide {
 
 	set_init_values() {
 		let me = this;
-		// Define valores a partir de frappe.setup.values.
+		// set values from frappe.setup.values
 		if (frappe.wizard.values && this.fields) {
 			this.fields.forEach(function (f) {
 				var value = frappe.wizard.values[f.fieldname];
@@ -398,45 +398,43 @@ frappe.setup.SetupWizardSlide = class SetupWizardSlide extends frappe.ui.Slide {
 // ======================================================
 frappe.setup.slides_settings = [
 	{
-		// Slide de boas-vindas (idioma)
+		// Welcome (language) slide
 		name: "welcome",
-		title: () => __("Bem-vindo") + " " + (frappe.setup.data.first_name || ""),
+		title: () => __("Bem Vindo") + " " + (frappe.setup.data.first_name || ""),
 
 		fields: [
 			{
 				fieldname: "language",
-				label: __("Seu idioma"),
+				label: __("Your Language"),
 				fieldtype: "Autocomplete",
-				placeholder: __("Selecione o idioma"),
+				placeholder: __("Select Language"),
 				default: "Português Brasileiro",
 				reqd: 1,
 			},
 			{
 				fieldname: "country",
-				label: __("Seu país"),
+				label: __("Your Country"),
 				fieldtype: "Autocomplete",
-				placeholder: __("Selecione o país"),
+				placeholder: __("Select Country"),
 				reqd: 1,
 			},
 			{
 				fieldname: "timezone",
-				label: __("Fuso horário"),
-				placeholder: __("Selecione o fuso horário"),
+				label: __("Time Zone"),
+				placeholder: __("Select Time Zone"),
 				fieldtype: "Select",
 				reqd: 1,
 			},
 			{
 				fieldname: "currency",
-				label: __("Moeda"),
-				placeholder: __("Selecione a moeda"),
+				label: __("Currency"),
+				placeholder: __("Select Currency"),
 				fieldtype: "Select",
 				reqd: 1,
 			},
 			{
 				fieldname: "enable_telemetry",
-				label: __(
-					"Permitir o envio de dados de uso para melhorar os aplicativos"
-				),
+				label: __("Allow sending usage data for improving applications"),
 				fieldtype: "Check",
 				default: cint(frappe.telemetry.can_enable()),
 				depends_on: "eval:frappe.telemetry.can_enable()",
@@ -484,20 +482,20 @@ frappe.setup.slides_settings = [
 		},
 	},
 	{
-		// Slide de perfil
+		// Profile slide
 		name: "user",
-		title: __("Vamos configurar sua conta"),
+		title: __("Let's set up your account"),
 		icon: "fa fa-user",
 		fields: [
 			{
 				fieldname: "full_name",
-				label: __("Nome completo"),
+				label: __("Full Name"),
 				fieldtype: "Data",
 				reqd: 1,
 			},
 			{
 				fieldname: "email",
-				label: __("Endereço de e-mail") + " (" + __("Será seu ID de login") + ")",
+				label: __("Email Address") + " (" + __("Will be your login ID") + ")",
 				fieldtype: "Data",
 				options: "Email",
 			},
@@ -505,8 +503,8 @@ frappe.setup.slides_settings = [
 				fieldname: "password",
 				label:
 					frappe.session.user === "Administrator"
-						? __("Senha")
-						: __("Atualizar senha"),
+						? __("Password")
+						: __("Update Password"),
 				fieldtype: "Password",
 				length: 512,
 				depends_on: "eval:!frappe.boot.is_fc_site",
@@ -611,7 +609,7 @@ frappe.setup.utils = {
 
 	setup_region_fields: function (slide) {
 		/*
-			Define os campos de país, fuso horário e moeda do slide.
+			Set a slide's country, timezone and currency fields
 		*/
 		let data = frappe.setup.data.regional_data;
 		let country_field = slide.get_field("country");
@@ -640,7 +638,7 @@ frappe.setup.utils = {
 		slide.get_field("currency").set_input(frappe.wizard.values.currency);
 		slide.get_field("timezone").set_input(frappe.wizard.values.timezone);
 
-		// Define valores, se estiverem presentes.
+		// set values if present
 		let country =
 			frappe.wizard.values.country ||
 			data.default_country ||
@@ -686,7 +684,7 @@ frappe.setup.utils = {
 
 	bind_region_events: function (slide) {
 		/*
-			Vincula eventos aos campos de país, fuso horário e moeda do slide.
+			Bind a slide's country, timezone and currency fields
 		*/
 		slide.get_input("country").on("change", function () {
 			let data = frappe.setup.data.regional_data;
@@ -699,17 +697,17 @@ frappe.setup.utils = {
 			$timezone.empty();
 
 			if (!country) return;
-			// Adiciona primeiro os fusos horários específicos do país.
+			// add country specific timezones first
 			const timezone_list = data.country_info[country].timezones || [];
 			$timezone.add_options(timezone_list.sort());
 			slide.get_field("currency").set_input(data.country_info[country].currency);
 			slide.get_field("currency").$input.trigger("change");
 
-			// Adiciona todos os fusos ao final para permitir escolher qualquer um.
+			// add all timezones at the end, so that user has the option to change it to any timezone
 			$timezone.add_options(data.all_timezones);
 			slide.get_field("timezone").set_input($timezone.val());
 
-			// Define temporariamente o formato de data.
+			// temporarily set date format
 			frappe.boot.sysdefaults.date_format =
 				data.country_info[country].date_format || "dd-mm-yyyy";
 		});
@@ -734,7 +732,7 @@ frappe.setup.utils = {
 	},
 };
 
-// https://github.com/eggert/tz/blob/main/backward - adicione mais, se necessário.
+// https://github.com/eggert/tz/blob/main/backward add more if required.
 const TZ_BACKWARD_COMPATBILITY_MAP = {
 	"Asia/Calcutta": "Asia/Kolkata",
 };
@@ -749,6 +747,6 @@ function guess_country(country_info) {
 			if (possible_timezones.length) return country;
 		}
 	} catch (e) {
-		console.log("Não foi possível identificar o país", e);
+		console.log("Could not guess country", e);
 	}
 }
