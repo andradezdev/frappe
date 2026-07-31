@@ -104,3 +104,7 @@ ATUALIZADO login.html para ERPZ
 TRADUZIDO ARQUIVO COMPLETO login.html 
 
 
+Atualizado login.py de Frappe para ERPZ
+
+Atualizado erpnext_settings ERPNext para ERPZ
+

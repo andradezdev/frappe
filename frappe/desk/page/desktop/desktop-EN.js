@@ -457,9 +457,9 @@ class DesktopPage {
 			},
 			{
 				icon: "support",
-				label: "Frappe Support",
+				label: "ERPZ Suporte",
 				onClick: function () {
-					window.open("https://support.frappe.io/help", "_blank");
+					window.open("https://suporte.erpz.io/help", "_blank");
 				},
 			},
 			{
