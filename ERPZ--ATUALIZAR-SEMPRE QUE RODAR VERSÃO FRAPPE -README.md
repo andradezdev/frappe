@@ -111,4 +111,5 @@ Atualizado erpnext_settings ERPNext para ERPZ
 
 Atualizado desk.js para PT-BR
 
+Atualizado fonte desktop.js para chamadas comerciais 
 
