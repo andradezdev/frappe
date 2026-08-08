@@ -108,3 +108,7 @@ Atualizado login.py de Frappe para ERPZ
 
 Atualizado erpnext_settings ERPNext para ERPZ
 
+
+Atualizado desk.js para PT-BR
+
+
